@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>ColoradoFun</title>
+    <link href="<%= "/bootstrap/css/theme/" + theme + "/bootstrap.css" %>" rel="stylesheet">
+    <link href="/bootstrap/css/jumbotron-narrow.css" rel="stylesheet">
+
+    <style>
+    body {
+      width: 100%;
+    }
+    #map { 
+      height: 400px;
+     }
+    </style>
+
+  </head>
+
+  <body>
+
+  	<div class="container">
+    	<div class="header">
+        <ul class="nav nav-pills pull-right">
+  				<li><a href="/">Home</a></li>
+  				<li><a href="/about">About</a></li>
+  				<li class="active" ><a href="/map">Map</a></li>
+  				<li><a href="/user">My Profile</a></li>
+        </ul>
+        <h3><img src="/images/logo.jpg"></h3>
+		  </div>
+
+      <h1> Map </h1>
+      <div class='form-group'>
+        <input type="text" class="datepicker" id="startSearch" size="7" placeholder="Start Date"></input>
+        <input type="text" class="datepicker" id="endSearch" size="7" placeholder="End Date"></input>
+        <input type="text" id="titleSearch" size="15" onkeyup="activeSearch()" placeholder="Search By Title" ></input>
+        <input type="text" id="locationSearch" size="15" onkeyup="activeSearch()" placeholder="Search By Location" ></input>
+        <select id='categorySearch'></select>
+      </div>
+      <div id="map"></div>
+
+
+	  	<div class="footer">
+	        <p>&copy; ColoradoFun - 2018</p>
+	    </div>
+	</div>
+    <!-- <script type="text/javascript" src="/jquery/jquery-1.11.3.min.js"></script> -->
+    <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+
+    <script>
+      function initMap() {
+        var info = JSON.parse('<%- JSON.stringify(events) %>');
+        var categories = ['family','free','fun'];
+        
+        var location = document.getElementById('categorySearch');
+        categories.map(function(data, i){
+          var title = document.createElement('option');
+          title.innerHTML = data;
+          location.appendChild(title);
+        });
+        
+        var mapOptions = {
+            zoom: 7,
+            center: {lat: 39.4, lng: -105.0},
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            streetViewControl: false,
+            mapTypeControl: false
+        };
+        var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+        var markers = info.map(function(data, i){
+          //title.innerHTML += data['Lat'];
+          var marker =  new google.maps.Marker({
+            position: {lat: data['Lat'], lng: data['Lng']},
+            map: map
+          });
+          var infowindow = new google.maps.InfoWindow({
+            content: "HELLO!"
+          });
+          marker.addListener('click',function() {
+            infowindow.open(map, marker);
+          });
+          return marker;
+
+        });
+      }
+    </script>
+    
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB2bgQRRNuFlC9XV0G0k0svzyzpvg6QBHs&callback=initMap">
+    </script>
+
+  </body>
+  </html>
